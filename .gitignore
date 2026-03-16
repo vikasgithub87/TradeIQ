@@ -4,3 +4,15 @@ __pycache__/
 *.pyo
 .DS_Store
 Thumbs.db
+
+# Frontend
+frontend/node_modules/
+frontend/.env.local
+frontend/dist/
+
+# Backend
+backend/__pycache__/
+backend/**/__pycache__/
+
+# Data files
+backend/data/*.json
