@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import axios from 'axios'
+import RegimeBanner from '../components/RegimeBanner'
 
 const API_URL = import.meta.env.VITE_API_URL as string
 
@@ -58,6 +59,8 @@ export default function Dashboard() {
         </button>
       </div>
 
+      <RegimeBanner />
+
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
                     gap: 16, marginBottom: 32 }}>
         {[
@@ -80,11 +83,10 @@ export default function Dashboard() {
       <div style={{ padding: 20, background: '#eff6ff', borderRadius: 8,
                     border: '1px solid #bfdbfe' }}>
         <h2 style={{ fontSize: 16, margin: '0 0 8px', color: '#1e40af' }}>
-          Sprint 1 Complete
+          Sprint 1 & 2 Complete
         </h2>
         <p style={{ margin: 0, fontSize: 13, color: '#1e40af', lineHeight: 1.6 }}>
-          Foundation is ready. Backend API running. Database connected.
-          Auth working. Sprint 2 will add Layer 0 — Market Regime DNA.
+          Foundation ready. Backend API. Database. Auth. Layer 0 Market Regime DNA live.
         </p>
       </div>
     </div>

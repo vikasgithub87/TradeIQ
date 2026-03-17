@@ -59,5 +59,45 @@
     "s1_6_notes": "",
     "s1_7_endpoint": "",
     "s1_7_notes": ""
+  },
+  "s2_1": {
+    "status": "pass",
+    "timestamp": "2026-03-17T14:50:50.504007",
+    "s2_6_regime": "",
+    "s2_6_nifty": "",
+    "s2_6_match": "",
+    "output": "File found: backend/layers/layer0.py"
+  },
+  "s2_2": {
+    "status": "pass",
+    "timestamp": "2026-03-17T14:50:59.350560",
+    "s2_6_regime": "",
+    "s2_6_nifty": "",
+    "s2_6_match": "",
+    "output": "TradeIQ Layer 0 \u2014 Market Regime DNA\nDate: 2025-01-26\n==================================================\nStep 1: Checking calendar...\n  Market closed: Republic Day\n\n  Saved: C:\\Users\\m3n2c7\\TradeIQ\\backend\\data\\regime_context.json\n\n============================================================\n  TRADEIQ MORNING BRIEFING\n  2025-01-26\n============================================================\n  MARKET CLOSED \u2014 Market closed: Republic Day\n============================================================\nok"
+  },
+  "s2_3": {
+    "status": "pass",
+    "timestamp": "2026-03-17T14:51:17.820966",
+    "s2_6_regime": "",
+    "s2_6_nifty": "",
+    "s2_6_match": "",
+    "output": "TradeIQ Layer 0 \u2014 Market Regime DNA\nDate: 2025-01-30\n==================================================\nStep 1: Checking calendar...\n  Market open. Expiry day: True\n  RBI day: False  Budget day: False\nStep 2: Fetching global macro data...\n  Fetching India VIX...\n  Fetching crude oil price...\n  Fetching Dollar Index...\n  Fetching S&P 500 futures...\n  India VIX: 19.88\n  Crude oil: $103.47\n  S&P 500 futures: -0.31%  (negative)\nStep 3: Classifying regime...\n  Regime: EXPIRY_CAUTION\n\n  Saved: C:\\Users\\m3n2c7\\TradeIQ\\backend\\data\\regime_context.json\n\n============================================================\n  TRADEIQ MORNING BRIEFING\n  2025-01-30\n============================================================\n\n  REGIME:  EXPIRY CAUTION  !  Expiry day - reduce size\n  SCORE:   26/100\n  REASON:  Monthly F&O expiry \u2014 pin risk and artificial moves near strikes\n\n  MARKET DATA:\n    India VIX:       19.88\n    Crude Oil:       $103.47/bbl\n    Dollar Index:    99.75\n    S&P 500 Futures: -0.31%  (negative)\n\n  TODAY'S FLAGS:  Monthly F&O Expiry\n\n  TRADING PARAMETERS:\n    L2 Score threshold:   >= 80\n    Confidence threshold: >= 78\n    Position size:        60% of normal\n    Active directions:    BUY, SHORT\n    Days to expiry:       0\n\n============================================================\nok"
+  },
+  "s2_4": {
+    "status": "fail",
+    "timestamp": "2026-03-17T14:51:58.694424",
+    "s2_6_regime": "",
+    "s2_6_nifty": "",
+    "s2_6_match": "",
+    "output": "TradeIQ Layer 0 \u2014 Market Regime DNA\nDate: 2025-03-15\n==================================================\nStep 1: Checking calendar...\n  Market closed: Weekend\n\n  Saved: C:\\Users\\m3n2c7\\TradeIQ\\backend\\data\\regime_context.json\n\n============================================================\n  TRADEIQ MORNING BRIEFING\n  2025-03-15\n============================================================\n  MARKET CLOSED \u2014 Market closed: Weekend\n============================================================\nfail_got_MARKET_CLOSED"
+  },
+  "s2_5": {
+    "status": "pass",
+    "timestamp": "2026-03-17T14:52:04.978969",
+    "s2_6_regime": "",
+    "s2_6_nifty": "",
+    "s2_6_match": "",
+    "output": "TradeIQ Layer 0 \u2014 Market Regime DNA\nDate: 2025-03-15\n==================================================\nStep 1: Checking calendar...\n  Market closed: Weekend\n\n  Saved: C:\\Users\\m3n2c7\\TradeIQ\\backend\\data\\regime_context.json\n\n============================================================\n  TRADEIQ MORNING BRIEFING\n  2025-03-15\n============================================================\n  MARKET CLOSED \u2014 Market closed: Weekend\n============================================================\nok"
   }
 }
