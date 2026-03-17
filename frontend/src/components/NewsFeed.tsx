@@ -3,6 +3,7 @@
  */
 import { useState } from 'react'
 import axios from 'axios'
+import FinancialCard from './FinancialCard'
 
 const API_URL = import.meta.env.VITE_API_URL as string
 
@@ -197,6 +198,8 @@ export default function NewsFeed() {
               {intel.catalyst_summary}
             </p>
           </div>
+
+          <FinancialCard ticker={intel.ticker} />
 
           {intel.long_catalysts.length > 0 && (
             <div style={{ marginBottom: 12 }}>

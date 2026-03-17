@@ -401,11 +401,11 @@ Add a comment at the top showing the expected output format."""
                 "id": "s1_3",
                 "type": "auto",
                 "name": "React app accessible",
-                "desc": "localhost:3000 returns 200",
+                "desc": "localhost:5173 returns 200",
                 "auto_cmd": ["python", "-c",
-                    "import urllib.request; r=urllib.request.urlopen('http://localhost:3000'); print('ok' if r.status==200 else 'fail')"],
+                    "import urllib.request; r=urllib.request.urlopen('http://localhost:5173'); print('ok' if r.status==200 else 'fail')"],
                 "expect": "ok",
-                "vector": "GET localhost:3000  →  200 OK (React app)"
+                "vector": "GET localhost:5173  →  200 OK (React app)"
             },
             {
                 "id": "s1_4",
@@ -430,7 +430,7 @@ Add a comment at the top showing the expected output format."""
                 "type": "manual",
                 "name": "Full login flow works",
                 "desc": "Register → verify email → login → see dashboard → logout → login again",
-                "vector": "1. Go to localhost:3000\n2. Click Register\n3. Enter your real email\n4. Check inbox — click Supabase verify link\n5. Login with same email+password\n6. Confirm you see the dashboard\n7. Logout and login again\nAll 7 steps must complete without error.",
+                "vector": "1. Go to localhost:5173\n2. Click Register\n3. Enter your real email\n4. Check inbox — click Supabase verify link\n5. Login with same email+password\n6. Confirm you see the dashboard\n7. Logout and login again\nAll 7 steps must complete without error.",
                 "manual_inputs": [
                     {"id": "s1_6_email", "label": "Email used for test:", "width": 40},
                     {"id": "s1_6_notes", "label": "Any issues encountered:", "width": 60}
@@ -441,7 +441,7 @@ Add a comment at the top showing the expected output format."""
                 "type": "manual",
                 "name": "Network tab shows :8000 requests",
                 "desc": "React app is calling FastAPI — verified in browser DevTools",
-                "vector": "1. Open localhost:3000 in Chrome\n2. Press F12 → Network tab\n3. Reload the page\n4. Look for requests to localhost:8000\n5. Click one — Status must be 200\n6. Click Response tab — must show JSON data",
+                "vector": "1. Open localhost:5173 in Chrome\n2. Press F12 → Network tab\n3. Reload the page\n4. Look for requests to localhost:8000\n5. Click one — Status must be 200\n6. Click Response tab — must show JSON data",
                 "manual_inputs": [
                     {"id": "s1_7_endpoint", "label": "Which endpoint was called (e.g. /health):", "width": 40},
                     {"id": "s1_7_notes", "label": "Notes:", "width": 60}
@@ -452,7 +452,7 @@ Add a comment at the top showing the expected output format."""
 
 BACKEND (Python FastAPI):
 - File structure: backend/main.py, backend/db.py, backend/models.py, backend/routers/health.py
-- FastAPI app with CORS enabled for localhost:3000
+- FastAPI app with CORS enabled for localhost:5173
 - PostgreSQL connection via SQLAlchemy (async) using DATABASE_URL from .env
 - Health endpoint: GET /health returns {"status": "ok", "db": "connected", "version": "1.0"}
 - These database tables with SQLAlchemy models (EVERY table must have tenant_id UUID column):

@@ -149,5 +149,50 @@
     "s3_7_score": "",
     "s3_7_wrong": "",
     "output": "[RELIANCE] Fetching news...\n  WARNING: No articles found for RELIANCE\n  [RELIANCE] Found 0 unique articles\n  [RELIANCE] Analysing sentiment...\n  [RELIANCE] Saved: C:\\Users\\m3n2c7\\TradeIQ\\backend\\data\\company_intel\\company_intel_RELIANCE_2026-03-17.json\nok"
+  },
+  "s4_1": {
+    "status": "fail",
+    "timestamp": "2026-03-17T21:41:30.986412",
+    "s4_6_ticker": "",
+    "s4_6_our": "",
+    "s4_6_media": "",
+    "s4_6_match": "",
+    "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import sys; sys.path.insert(0,'backend'); from layers.layer1_financials import fetch_intraday; data=fetch_intraday('RELIANCE'); print('ok' if len(data)>10 else 'fail_only_'+str(len(data))+'_rows')\n                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nImportError: cannot import name 'fetch_intraday' from 'layers.layer1_financials' (C:\\Users\\m3n2c7\\TradeIQ\\backend\\layers\\layer1_financials.py)"
+  },
+  "s4_2": {
+    "status": "pass",
+    "timestamp": "2026-03-17T21:41:38.112512",
+    "s4_6_ticker": "",
+    "s4_6_our": "",
+    "s4_6_media": "",
+    "s4_6_match": "",
+    "output": "ok"
+  },
+  "s4_3": {
+    "status": "pass",
+    "timestamp": "2026-03-17T21:36:48.587241",
+    "s4_6_ticker": "",
+    "s4_6_our": "",
+    "s4_6_media": "",
+    "s4_6_match": "",
+    "output": "ok"
+  },
+  "s4_4": {
+    "status": "fail",
+    "timestamp": "2026-03-17T21:41:44.608719",
+    "s4_6_ticker": "",
+    "s4_6_our": "",
+    "s4_6_media": "",
+    "s4_6_match": "",
+    "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import sys; sys.path.insert(0,'backend'); from layers.layer1_financials import calc_pcr; r=calc_pcr(1240000,1850000); diff=abs(r-0.6703); print('ok' if diff<0.01 else 'fail_got_'+str(round(r,4)))\n                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nImportError: cannot import name 'calc_pcr' from 'layers.layer1_financials' (C:\\Users\\m3n2c7\\TradeIQ\\backend\\layers\\layer1_financials.py)"
+  },
+  "s4_5": {
+    "status": "fail",
+    "timestamp": "2026-03-17T21:37:06.487305",
+    "s4_6_ticker": "",
+    "s4_6_our": "",
+    "s4_6_media": "",
+    "s4_6_match": "",
+    "output": "[INFY] Fetching OHLCV data...\n  [INFY] Fetching fundamentals...\n  [INFY] Fetching FII/DII activity...\nmissing:oi_data,promoter_pledge_pct,earnings"
   }
 }

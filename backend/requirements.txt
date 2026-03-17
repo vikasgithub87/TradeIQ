@@ -11,3 +11,6 @@ python-jose[cryptography]==3.3.0
 celery==5.3.6
 redis==5.0.1
 requests==2.31.0
+yfinance==0.2.36
+pandas==2.2.0
+numpy==1.26.4

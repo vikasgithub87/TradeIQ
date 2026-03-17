@@ -46,6 +46,12 @@ app.conf.beat_schedule = {
                             hour="9,10,11,12,13,14,15",
                             day_of_week="mon,tue,wed,thu,fri"),
     },
+    # Layer 1 financials — runs at 08:30 IST after news pipeline
+    "run-layer1-financials-morning": {
+        "task":     "backend.scheduler.task_run_layer1_financials",
+        "schedule": crontab(hour=8, minute=30,
+                            day_of_week="mon,tue,wed,thu,fri"),
+    },
 }
 
 @app.task(name="backend.scheduler.task_run_layer0")
@@ -74,5 +80,28 @@ def task_run_layer1_batch():
         from backend.layers.layer1_news import run_batch
         result = run_batch(n=20, delay_seconds=1.0, verbose=False)
         return {"status": "ok", "processed": result.get("processed", 0)}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+@app.task(name="backend.scheduler.task_run_layer1_financials")
+def task_run_layer1_financials():
+    """Celery task — merges financial data for top 20 companies."""
+    sys.path.insert(0, ".")
+    try:
+        from backend.layers.layer1_merge import merge_financial_data
+        from backend.layers.layer1_news import _load_watchlist
+
+        watchlist = _load_watchlist()[:20]
+        processed = 0
+        for company in watchlist:
+            try:
+                merge_financial_data(company["ticker"], verbose=False)
+                processed += 1
+                import time
+                time.sleep(1.0)
+            except Exception:
+                continue
+        return {"status": "ok", "processed": processed}
     except Exception as e:
         return {"status": "error", "message": str(e)}
