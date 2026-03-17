@@ -99,5 +99,55 @@
     "s2_6_nifty": "",
     "s2_6_match": "",
     "output": "TradeIQ Layer 0 \u2014 Market Regime DNA\nDate: 2025-03-15\n==================================================\nStep 1: Checking calendar...\n  Market closed: Weekend\n\n  Saved: C:\\Users\\m3n2c7\\TradeIQ\\backend\\data\\regime_context.json\n\n============================================================\n  TRADEIQ MORNING BRIEFING\n  2025-03-15\n============================================================\n  MARKET CLOSED \u2014 Market closed: Weekend\n============================================================\nok"
+  },
+  "s3_1": {
+    "status": "pass",
+    "timestamp": "2026-03-17T20:30:52.172772",
+    "s3_6_time": "",
+    "s3_6_files": "",
+    "s3_6_quality": "",
+    "s3_7_score": "",
+    "s3_7_wrong": "",
+    "output": "File found: backend/layers/layer1_news.py"
+  },
+  "s3_2": {
+    "status": "fail",
+    "timestamp": "2026-03-17T20:38:56.974234",
+    "s3_6_time": "",
+    "s3_6_files": "",
+    "s3_6_quality": "",
+    "s3_7_score": "",
+    "s3_7_wrong": "",
+    "output": "WARNING: No articles found for RELIANCE\nfail_got_1_articles"
+  },
+  "s3_3": {
+    "status": "fail",
+    "timestamp": "2026-03-17T20:35:34.184626",
+    "s3_6_time": "",
+    "s3_6_files": "",
+    "s3_6_quality": "",
+    "s3_7_score": "",
+    "s3_7_wrong": "",
+    "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import sys; sys.path.insert(0,'backend'); from layers.layer1_news import analyse_sentiment; r=analyse_sentiment('INFY','Infosys raises FY25 revenue guidance to 5 percent, beats Q3 estimates','Infosys reported strong quarterly results exceeding analyst expectations'); print('ok' if r.get('sentiment')=='positive' else 'fail_got_'+str(r.get('sentiment')))\n                                                                                                  ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\m3n2c7\\TradeIQ\\backend\\layers\\layer1_sentiment.py\", line 110, in analyse_sentiment\n    if not articles or articles[0].get(\"fingerprint\") == \"placeholder\":\n                       ^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'get'"
+  },
+  "s3_4": {
+    "status": "fail",
+    "timestamp": "2026-03-17T20:31:30.448701",
+    "s3_6_time": "",
+    "s3_6_files": "",
+    "s3_6_quality": "",
+    "s3_7_score": "",
+    "s3_7_wrong": "",
+    "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import sys; sys.path.insert(0,'backend'); from layers.layer1_news import analyse_sentiment; r=analyse_sentiment('HDFCBANK','HDFC Bank faces RBI penalty of 200 crore for compliance violations','Reserve Bank of India imposed a fine on HDFC Bank'); print('ok' if r.get('sentiment')=='negative' else 'fail_got_'+str(r.get('sentiment')))\n                                                                                                  ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\m3n2c7\\TradeIQ\\backend\\layers\\layer1_sentiment.py\", line 110, in analyse_sentiment\n    if not articles or articles[0].get(\"fingerprint\") == \"placeholder\":\n                       ^^^^^^^^^^^^^^^\nAttributeError: 'str' object has no attribute 'get'"
+  },
+  "s3_5": {
+    "status": "pass",
+    "timestamp": "2026-03-17T20:31:34.939216",
+    "s3_6_time": "",
+    "s3_6_files": "",
+    "s3_6_quality": "",
+    "s3_7_score": "",
+    "s3_7_wrong": "",
+    "output": "[RELIANCE] Fetching news...\n  WARNING: No articles found for RELIANCE\n  [RELIANCE] Found 0 unique articles\n  [RELIANCE] Analysing sentiment...\n  [RELIANCE] Saved: C:\\Users\\m3n2c7\\TradeIQ\\backend\\data\\company_intel\\company_intel_RELIANCE_2026-03-17.json\nok"
   }
 }

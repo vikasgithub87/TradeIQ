@@ -33,6 +33,19 @@ app.conf.beat_schedule = {
         "schedule": crontab(hour=7, minute=30,
                             day_of_week="mon,tue,wed,thu,fri"),
     },
+    # Layer 1 — full batch at 08:00 IST every weekday
+    "run-layer1-morning": {
+        "task":     "backend.scheduler.task_run_layer1_batch",
+        "schedule": crontab(hour=8, minute=0,
+                            day_of_week="mon,tue,wed,thu,fri"),
+    },
+    # Layer 1 — refresh during market hours every 15 minutes
+    "run-layer1-intraday": {
+        "task":     "backend.scheduler.task_run_layer1_batch",
+        "schedule": crontab(minute="*/15",
+                            hour="9,10,11,12,13,14,15",
+                            day_of_week="mon,tue,wed,thu,fri"),
+    },
 }
 
 @app.task(name="backend.scheduler.task_run_layer0")
@@ -46,5 +59,20 @@ def task_run_layer0():
         from backend.layers.layer0 import classify_regime
         result = classify_regime()
         return {"status": "ok", "regime": result.get("regime")}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+@app.task(name="backend.scheduler.task_run_layer1_batch")
+def task_run_layer1_batch():
+    """Celery task — runs Layer 1 for top 20 companies."""
+    from pathlib import Path
+    _root = str(Path(__file__).resolve().parent.parent)
+    if _root not in sys.path:
+        sys.path.insert(0, _root)
+    try:
+        from backend.layers.layer1_news import run_batch
+        result = run_batch(n=20, delay_seconds=1.0, verbose=False)
+        return {"status": "ok", "processed": result.get("processed", 0)}
     except Exception as e:
         return {"status": "error", "message": str(e)}

@@ -1,0 +1,30 @@
+{
+  "ticker": "ZOMATO",
+  "company_name": "Zomato",
+  "sector_code": "IT",
+  "tenant_id": "0001",
+  "timestamp": "2026-03-17T20:27:54.967884",
+  "date": "2026-03-17",
+  "articles_fetched": 1,
+  "long_catalysts": [],
+  "short_catalysts": [],
+  "net_sentiment_score": 0.0,
+  "dominant_direction": "NEUTRAL",
+  "intraday_relevance": "MEDIUM",
+  "catalyst_summary": "Fallback analysis for ZOMATO: NEUTRAL bias.",
+  "raw_articles": [
+    {
+      "headline": "Sensex ends 3-day losing streak, settles 939 pts higher, Nifty above 23,400",
+      "source": "The Times of India",
+      "source_trust": 0.68,
+      "published_at": "2026-03-16T10:16:51Z",
+      "recency_weight": 0.5,
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/sensex-ends-3-day-losing-streak-settles-939-pts-higher-nifty-above-23400/articleshow/129606767.cms"
+    }
+  ],
+  "oi_data": {},
+  "promoter_pledge_pct": 0.0,
+  "fii_activity": "neutral",
+  "earnings": {},
+  "fundamentals": {}
+}

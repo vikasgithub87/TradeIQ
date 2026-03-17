@@ -1,0 +1,30 @@
+{
+  "ticker": "RELIANCE",
+  "company_name": "0001",
+  "sector_code": "Unknown",
+  "tenant_id": "0001",
+  "timestamp": "2026-03-17T20:31:34.912123",
+  "date": "2026-03-17",
+  "articles_fetched": 1,
+  "long_catalysts": [],
+  "short_catalysts": [],
+  "net_sentiment_score": 0.0,
+  "dominant_direction": "NEUTRAL",
+  "intraday_relevance": "LOW",
+  "catalyst_summary": "No significant news found for RELIANCE today.",
+  "raw_articles": [
+    {
+      "headline": "No recent news found for RELIANCE",
+      "source": "none",
+      "source_trust": 0.0,
+      "published_at": "",
+      "recency_weight": 0.0,
+      "url": ""
+    }
+  ],
+  "oi_data": {},
+  "promoter_pledge_pct": 0.0,
+  "fii_activity": "neutral",
+  "earnings": {},
+  "fundamentals": {}
+}

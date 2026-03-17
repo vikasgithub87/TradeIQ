@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import axios from 'axios'
 import RegimeBanner from '../components/RegimeBanner'
+import NewsFeed from '../components/NewsFeed'
 
 const API_URL = import.meta.env.VITE_API_URL as string
 
@@ -88,6 +89,16 @@ export default function Dashboard() {
         <p style={{ margin: 0, fontSize: 13, color: '#1e40af', lineHeight: 1.6 }}>
           Foundation ready. Backend API. Database. Auth. Layer 0 Market Regime DNA live.
         </p>
+      </div>
+
+      <div style={{ marginTop: 32 }}>
+        <h2 style={{ fontSize: 18, marginBottom: 4, fontWeight: 600 }}>
+          Company Intelligence
+        </h2>
+        <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 0 }}>
+          Enter a ticker to load today&apos;s news analysis
+        </p>
+        <NewsFeed />
       </div>
     </div>
   )

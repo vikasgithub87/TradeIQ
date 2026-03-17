@@ -1,0 +1,46 @@
+{
+  "ticker": "BAJFINANCE",
+  "company_name": "Bajaj Finance",
+  "sector_code": "Banking",
+  "tenant_id": "0001",
+  "timestamp": "2026-03-17T20:29:42.714014",
+  "date": "2026-03-17",
+  "articles_fetched": 3,
+  "long_catalysts": [],
+  "short_catalysts": [],
+  "net_sentiment_score": -0.333,
+  "dominant_direction": "SHORT",
+  "intraday_relevance": "MEDIUM",
+  "catalyst_summary": "Fallback analysis for BAJFINANCE: SHORT bias.",
+  "raw_articles": [
+    {
+      "headline": "Sensex ends 3-day losing streak, settles 939 pts higher, Nifty above 23,400",
+      "source": "The Times of India",
+      "source_trust": 0.68,
+      "published_at": "2026-03-16T10:16:51Z",
+      "recency_weight": 0.5,
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/sensex-ends-3-day-losing-streak-settles-939-pts-higher-nifty-above-23400/articleshow/129606767.cms"
+    },
+    {
+      "headline": "M-cap of top 10 firms tumbles by Rs 4.48 lakh cr; SBI, HDFC Bank top laggards",
+      "source": "The Times of India",
+      "source_trust": 0.68,
+      "published_at": "2026-03-15T05:18:55Z",
+      "recency_weight": 0.5,
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/m-cap-of-top-10-firms-tumbles-by-rs-4-48-lakh-cr-sbi-hdfc-bank-top-laggards/articleshow/129585086.cms"
+    },
+    {
+      "headline": "Top-10 firms lose \u20b94.48 lakh cr in mcap; SBI, HDFC Bank biggest laggards",
+      "source": "BusinessLine",
+      "source_trust": 0.5,
+      "published_at": "2026-03-15T07:41:47Z",
+      "recency_weight": 0.5,
+      "url": "https://www.thehindubusinessline.com/markets/top-10-firms-lose-448-lakh-cr-in-mcap-sbi-hdfc-bank-biggest-laggards/article70745990.ece"
+    }
+  ],
+  "oi_data": {},
+  "promoter_pledge_pct": 0.0,
+  "fii_activity": "neutral",
+  "earnings": {},
+  "fundamentals": {}
+}

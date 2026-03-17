@@ -1,0 +1,38 @@
+{
+  "ticker": "BHARTIARTL",
+  "company_name": "Bharti Airtel",
+  "sector_code": "Telecom",
+  "tenant_id": "0001",
+  "timestamp": "2026-03-17T20:29:45.595513",
+  "date": "2026-03-17",
+  "articles_fetched": 2,
+  "long_catalysts": [],
+  "short_catalysts": [],
+  "net_sentiment_score": -1.0,
+  "dominant_direction": "SHORT",
+  "intraday_relevance": "MEDIUM",
+  "catalyst_summary": "Fallback analysis for BHARTIARTL: SHORT bias.",
+  "raw_articles": [
+    {
+      "headline": "M-cap of top 10 firms tumbles by Rs 4.48 lakh cr; SBI, HDFC Bank top laggards",
+      "source": "The Times of India",
+      "source_trust": 0.68,
+      "published_at": "2026-03-15T05:18:55Z",
+      "recency_weight": 0.5,
+      "url": "https://economictimes.indiatimes.com/markets/stocks/news/m-cap-of-top-10-firms-tumbles-by-rs-4-48-lakh-cr-sbi-hdfc-bank-top-laggards/articleshow/129585086.cms"
+    },
+    {
+      "headline": "Top-10 firms lose \u20b94.48 lakh cr in mcap; SBI, HDFC Bank biggest laggards",
+      "source": "BusinessLine",
+      "source_trust": 0.5,
+      "published_at": "2026-03-15T07:41:47Z",
+      "recency_weight": 0.5,
+      "url": "https://www.thehindubusinessline.com/markets/top-10-firms-lose-448-lakh-cr-in-mcap-sbi-hdfc-bank-biggest-laggards/article70745990.ece"
+    }
+  ],
+  "oi_data": {},
+  "promoter_pledge_pct": 0.0,
+  "fii_activity": "neutral",
+  "earnings": {},
+  "fundamentals": {}
+}
