@@ -6,6 +6,8 @@ import { supabase } from '../lib/supabase'
 import axios from 'axios'
 import RegimeBanner from '../components/RegimeBanner'
 import NewsFeed from '../components/NewsFeed'
+import ScoresPanel from '../components/ScoresPanel'
+import ScanPanel from '../components/ScanPanel'
 
 const API_URL = import.meta.env.VITE_API_URL as string
 
@@ -99,6 +101,11 @@ export default function Dashboard() {
           Enter a ticker to load today&apos;s news analysis
         </p>
         <NewsFeed />
+      </div>
+
+      <div style={{ marginTop: 32 }}>
+        <ScanPanel onScanComplete={() => window.location.reload()} />
+        <ScoresPanel />
       </div>
     </div>
   )

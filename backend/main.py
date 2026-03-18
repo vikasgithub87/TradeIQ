@@ -11,6 +11,8 @@ from backend.routers.health import router as health_router
 from backend.routers.regime import router as regime_router
 from backend.routers.intel import router as intel_router
 from backend.routers.financials import router as financials_router
+from backend.routers.scores import router as scores_router
+from backend.routers.scan import router as scan_router
 from backend.db import create_all_tables
 
 load_dotenv()
@@ -49,6 +51,8 @@ app.include_router(health_router)
 app.include_router(regime_router)
 app.include_router(intel_router)
 app.include_router(financials_router)
+app.include_router(scores_router)
+app.include_router(scan_router)
 
 @app.get("/")
 async def root():

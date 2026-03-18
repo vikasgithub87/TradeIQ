@@ -1,0 +1,30 @@
+{
+  "last_category": "news_impacted",
+  "last_count": 20,
+  "default_category": "nifty50",
+  "default_count": 20,
+  "last_run_at": "2026-03-18T11:54:14.919959",
+  "scheduled_time": "08:00",
+  "email_enabled": false,
+  "email_address": "",
+  "run_history": [
+    {
+      "category": "nifty50",
+      "count": 20,
+      "date": "2026-03-18",
+      "ran_at": "2026-03-18T11:45:26.550162"
+    },
+    {
+      "category": "ai_impacted",
+      "count": 20,
+      "date": "2026-03-18",
+      "ran_at": "2026-03-18T11:48:57.760019"
+    },
+    {
+      "category": "news_impacted",
+      "count": 20,
+      "date": "2026-03-18",
+      "ran_at": "2026-03-18T11:54:14.919969"
+    }
+  ]
+}

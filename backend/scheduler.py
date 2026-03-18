@@ -52,6 +52,12 @@ app.conf.beat_schedule = {
         "schedule": crontab(hour=8, minute=30,
                             day_of_week="mon,tue,wed,thu,fri"),
     },
+    # Layer 2 — runs at 08:45 IST after Layer 1 pipelines
+    "run-layer2-morning": {
+        "task":     "backend.scheduler.task_run_layer2",
+        "schedule": crontab(hour=8, minute=45,
+                            day_of_week="mon,tue,wed,thu,fri"),
+    },
 }
 
 @app.task(name="backend.scheduler.task_run_layer0")
@@ -103,5 +109,20 @@ def task_run_layer1_financials():
             except Exception:
                 continue
         return {"status": "ok", "processed": processed}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+@app.task(name="backend.scheduler.task_run_layer2")
+def task_run_layer2():
+    """Celery task — runs Layer 2 BUY scoring engine."""
+    sys.path.insert(0, ".")
+    try:
+        from backend.layers.layer2_runner import run_layer2
+        result = run_layer2(save_to_db=True, verbose=False)
+        return {
+            "status":          "ok",
+            "above_threshold": result.get("above_threshold", 0),
+        }
     except Exception as e:
         return {"status": "error", "message": str(e)}
