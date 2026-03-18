@@ -314,98 +314,82 @@ def fetch_google_news_rss(
 def fetch_news(
     ticker: str,
     company_name: str,
-    max_articles: int = 10,
+    max_articles: int = 8,
     days_back: int = 2,
 ) -> List[Dict]:
-    if not NEWSAPI_KEY:
-        print(f"  WARNING: NEWSAPI_KEY not set — returning placeholder for {ticker}")
-        return _placeholder_articles(ticker)
+    """
+    Fetch news for a company. Google News RSS is primary source.
+    NewsAPI supplements if Google News returns fewer than 2 articles.
+    """
+    all_articles: List[Dict] = []
+    seen_fps = set()
 
-    from_date = (
-        datetime.date.today() - datetime.timedelta(days=days_back)
-    ).strftime("%Y-%m-%d")
-
-    # Use optimised short search name if available
-    search_term = NEWSAPI_SEARCH_NAMES.get(ticker, company_name)
-    query = f"{search_term} NSE India stock"
-
-    try:
-        resp = requests.get(
-            NEWSAPI_BASE,
-            params={
-                "q": query,
-                "language": "en",
-                "sortBy": "publishedAt",
-                "pageSize": min(max_articles * 2, 50),
-                "from": from_date,
-                "apiKey": NEWSAPI_KEY,
-            },
-            timeout=12,
-        )
-        resp.raise_for_status()
-        data = resp.json()
-        if data.get("status") != "ok":
-            print(f"  WARNING: NewsAPI error for {ticker}: {data.get('message')}")
-            rss_articles = fetch_google_news_rss(ticker, company_name, max_articles)
-            if rss_articles:
-                return rss_articles[:max_articles]
-            return _placeholder_articles(ticker)
-
-        raw_articles = data.get("articles", [])
-        if not raw_articles:
-            # Fallback to Google News RSS
-            rss_articles = fetch_google_news_rss(ticker, company_name, max_articles)
-            if rss_articles:
-                return rss_articles[:max_articles]
-            # Final fallback — placeholder
-            return _placeholder_articles(ticker)
-
-        seen_fps = set()
-        articles: List[Dict] = []
-
-        for art in raw_articles:
-            headline = (art.get("title") or "").strip()
-            if not headline or headline == "[Removed]":
-                continue
-            fp = _headline_fingerprint(headline)
-            if fp in seen_fps:
-                continue
+    # ── Source 1: Google News RSS (PRIMARY) ──────────────────────────────────
+    rss_articles = fetch_google_news_rss(ticker, company_name, max_articles)
+    for art in rss_articles:
+        fp = art.get("fingerprint", "")
+        if fp and fp not in seen_fps:
             seen_fps.add(fp)
+            all_articles.append(art)
 
-            source_name = (art.get("source") or {}).get("name", "Unknown")
-            source_trust = get_source_trust(source_name)
-            published_at = art.get("publishedAt", "")
-            recency_weight = _compute_recency_weight(published_at)
+    # ── Source 2: NewsAPI (SUPPLEMENTARY) ────────────────────────────────────
+    if len(all_articles) < 2 and NEWSAPI_KEY:
+        from_date = (
+            datetime.date.today() - datetime.timedelta(days=days_back)
+        ).strftime("%Y-%m-%d")
+        search_term = NEWSAPI_SEARCH_NAMES.get(ticker, company_name)
+        query = f"{search_term} NSE India stock"
 
-            articles.append({
-                "headline": headline,
-                "body": (art.get("description") or "")[:500],
-                "source": source_name,
-                "source_trust": source_trust,
-                "published_at": published_at,
-                "recency_weight": recency_weight,
-                "url": art.get("url", ""),
-                "fingerprint": fp,
-            })
+        try:
+            import requests as req_lib
 
-        articles.sort(
-            key=lambda a: a["recency_weight"] * a["source_trust"],
-            reverse=True,
-        )
-        return articles[:max_articles]
+            resp = req_lib.get(
+                NEWSAPI_BASE,
+                params={
+                    "q": query,
+                    "language": "en",
+                    "sortBy": "publishedAt",
+                    "pageSize": max_articles * 2,
+                    "from": from_date,
+                    "apiKey": NEWSAPI_KEY,
+                },
+                timeout=12,
+            )
+            data = resp.json()
+            raw_arts = data.get("articles", []) if data.get("status") == "ok" else []
 
-    except requests.exceptions.Timeout:
-        print(f"  WARNING: NewsAPI timeout for {ticker}")
-        rss_articles = fetch_google_news_rss(ticker, company_name, max_articles)
-        if rss_articles:
-            return rss_articles[:max_articles]
+            for art in raw_arts:
+                headline = (art.get("title") or "").strip()
+                if not headline or headline == "[Removed]":
+                    continue
+                fp = _headline_fingerprint(headline)
+                if fp in seen_fps:
+                    continue
+                seen_fps.add(fp)
+                source_name = (art.get("source") or {}).get("name", "Unknown")
+                published_at = art.get("publishedAt", "")
+                all_articles.append({
+                    "headline": headline,
+                    "body": (art.get("description") or "")[:500],
+                    "source": source_name,
+                    "source_trust": get_source_trust(source_name),
+                    "published_at": published_at,
+                    "recency_weight": _compute_recency_weight(published_at),
+                    "url": art.get("url", ""),
+                    "fingerprint": fp,
+                })
+        except Exception:
+            pass
+
+    all_articles.sort(
+        key=lambda x: x.get("recency_weight", 1) * x.get("source_trust", 0.5),
+        reverse=True,
+    )
+
+    if not all_articles:
         return _placeholder_articles(ticker)
-    except Exception as e:
-        print(f"  WARNING: NewsAPI error for {ticker}: {e}")
-        rss_articles = fetch_google_news_rss(ticker, company_name, max_articles)
-        if rss_articles:
-            return rss_articles[:max_articles]
-        return _placeholder_articles(ticker)
+
+    return all_articles[:max_articles]
 
 
 def map_entity_to_ticker(text: str) -> list:

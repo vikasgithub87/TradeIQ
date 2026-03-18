@@ -407,6 +407,16 @@ export default function ScanPanel({ onScanComplete }: Props) {
           <div style={{ fontSize: 13, fontWeight: 600, color: '#15803d', marginBottom: 6 }}>
             ✓ {completed.message}
           </div>
+          <div style={{ fontSize: 11, color: '#6b7280', marginTop: 6 }}>
+            Signals will appear sorted by:{' '}
+            <strong>
+              {localStorage.getItem('tradeiq_sort') === 'confidence_desc'
+                ? 'Confidence (high to low)'
+                : localStorage.getItem('tradeiq_sort') === 'rr_desc'
+                ? 'R:R ratio'
+                : 'L2 Score'}
+            </strong>
+          </div>
         </div>
       )}
 

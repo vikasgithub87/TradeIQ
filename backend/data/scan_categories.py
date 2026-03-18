@@ -30,7 +30,7 @@ CATEGORY_META = {
     "news_impacted": {
         "label": "Recent News Impacted",
         "icon": "N",
-        "description": "Companies with HIGH intraday relevance news today",
+        "description": "Breaking news mapped to impacted stocks via Google News + AI",
         "color": "#0891b2",
         "type": "dynamic",
     },

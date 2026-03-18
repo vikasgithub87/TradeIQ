@@ -2,6 +2,7 @@
  * ShortSignalCard.tsx — Expandable card for a single SHORT signal.
  */
 import { useState } from 'react'
+import TechnicalCard from './TechnicalCard'
 
 export interface ShortScore {
   ticker: string
@@ -249,6 +250,8 @@ export default function ShortSignalCard({ score }: Props) {
                 )
               })}
           </div>
+
+          <TechnicalCard ticker={score.ticker} direction="SHORT" />
 
           {(score.l3_flags || score.short_flags || []).length > 0 && (
             <div style={{ marginTop: 10, display: 'flex', gap: 6, flexWrap: 'wrap' }}>

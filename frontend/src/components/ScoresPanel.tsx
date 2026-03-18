@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import ShortSignalCard, { type ShortScore } from './ShortSignalCard'
+import TechnicalCard from './TechnicalCard'
 
 const API_URL = import.meta.env.VITE_API_URL as string
 
@@ -59,9 +60,13 @@ export default function ScoresPanel() {
   const [error,   setError]   = useState<string | null>(null)
   const [expanded, setExpanded] = useState<string | null>(null)
   const [thresholdInput, setThresholdInput] = useState('60')
-  const [sortDir, setSortDir] = useState<'desc' | 'asc'>('desc')
+  const [l3Signals, setL3Signals] = useState<Record<string, number>>({})
+  const [sortBy, setSortBy] = useState<string>(
+    () => localStorage.getItem('tradeiq_sort') || 'score_desc'
+  )
   const [successMsg, setSuccessMsg] = useState<string | null>(null)
   const [shortData, setShortData] = useState<ShortScore[]>([])
+  const [l3Running, setL3Running] = useState(false)
 
   const fetchScores = () => {
     setLoading(true)
@@ -108,6 +113,18 @@ export default function ScoresPanel() {
         )
         setLoading(false)
       })
+
+    // Fetch L3 confidence scores for sorting
+    axios.get(`${API_URL}/signals/today?limit=50`)
+      .then(res => {
+        const map: Record<string, number> = {}
+        const allSigs = res.data.all_signals || []
+        allSigs.forEach((s: any) => {
+          map[s.ticker] = s.confidence_score || 0
+        })
+        setL3Signals(map)
+      })
+      .catch(() => {})
   }
 
   useEffect(() => { fetchScores() }, [])
@@ -166,6 +183,91 @@ export default function ScoresPanel() {
       })
   }
 
+  const runLayer3 = () => {
+    setL3Running(true)
+    setError(null)
+    setSuccessMsg(null)
+    axios.post<{ total_validated?: number; buy_signals?: number; short_signals?: number }>(
+      `${API_URL}/signals/run`
+    )
+      .then((res) => {
+        const tv = res.data.total_validated ?? 0
+        const b = res.data.buy_signals ?? 0
+        const s = res.data.short_signals ?? 0
+        setSuccessMsg(`Layer 3 complete — validated ${tv} (BUY ${b}, SHORT ${s}).`)
+        setL3Running(false)
+      })
+      .catch((err) => {
+        const d = err.response?.data?.detail
+        setError(typeof d === 'string' ? d : 'Failed to run Layer 3')
+        setL3Running(false)
+      })
+  }
+
+  const sortedScores = [...(data?.top_scores || [])].sort((a, b) => {
+    switch (sortBy) {
+      case 'confidence_desc':
+        return (l3Signals[b.ticker] || 0) - (l3Signals[a.ticker] || 0)
+      case 'confidence_asc':
+        return (l3Signals[a.ticker] || 0) - (l3Signals[b.ticker] || 0)
+      case 'score_desc':
+        return (b.buy_score || 0) - (a.buy_score || 0)
+      case 'score_asc':
+        return (a.buy_score || 0) - (b.buy_score || 0)
+      case 'rr_desc': {
+        // L3 R:R not in scores — sort by score as proxy if L3 unavailable
+        const rr_b = l3Signals[b.ticker] ? l3Signals[b.ticker] : b.buy_score || 0
+        const rr_a = l3Signals[a.ticker] ? l3Signals[a.ticker] : a.buy_score || 0
+        return rr_b - rr_a
+      }
+      case 'move_desc':
+        return (b.buy_score || 0) - (a.buy_score || 0) // proxy until L3 loaded
+      case 'volume_desc':
+        return (b.velocity_label === 'surging' ? 1 : 0) - (a.velocity_label === 'surging' ? 1 : 0)
+      case 'velocity_desc': {
+        const velOrder: Record<string, number> = {
+          surging: 6, rising_fast: 5, rising: 4,
+          stable: 3, falling: 2, dropping: 1,
+        }
+        return (velOrder[b.velocity_label] || 0) - (velOrder[a.velocity_label] || 0)
+      }
+      case 'streak_desc':
+        return (b.streak_days || 0) - (a.streak_days || 0)
+      case 'rsi_neutral': {
+        // Sort by RSI distance from 50 — closest = least risky
+        const rsi_a = l3Signals[a.ticker] || 50
+        const rsi_b = l3Signals[b.ticker] || 50
+        return Math.abs(rsi_a - 50) - Math.abs(rsi_b - 50)
+      }
+      case 'alpha':
+        return (a.ticker || '').localeCompare(b.ticker || '')
+      default:
+        return (b.buy_score || 0) - (a.buy_score || 0)
+    }
+  })
+
+  const sortedShorts = [...shortData].sort((a, b) => {
+    switch (sortBy) {
+      case 'confidence_desc':
+        return (l3Signals[b.ticker] || 0) - (l3Signals[a.ticker] || 0)
+      case 'confidence_asc':
+        return (l3Signals[a.ticker] || 0) - (l3Signals[b.ticker] || 0)
+      case 'velocity_desc': {
+        const velOrder: Record<string, number> = {
+          surging: 6, rising_fast: 5, rising: 4,
+          stable: 3, falling: 2, dropping: 1,
+        }
+        return (velOrder[b.velocity_label] || 0) - (velOrder[a.velocity_label] || 0)
+      }
+      case 'streak_desc':
+        return (b.streak_days || 0) - (a.streak_days || 0)
+      case 'alpha':
+        return (a.ticker || '').localeCompare(b.ticker || '')
+      default:
+        return (b.short_score || 0) - (a.short_score || 0)
+    }
+  })
+
   if (loading) {
     return (
       <div style={{ padding: 16, fontSize: 13, color: '#6b7280' }}>
@@ -190,21 +292,50 @@ export default function ScoresPanel() {
           )}
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 11, color: '#6b7280' }}>Sort</span>
+          {/* Sort controls */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <label style={{ fontSize: 12, color: '#6b7280', whiteSpace: 'nowrap' }}>
+              Sort by:
+            </label>
             <select
-              value={sortDir}
-              onChange={e => setSortDir(e.target.value === 'asc' ? 'asc' : 'desc')}
+              value={sortBy}
+              onChange={e => {
+                setSortBy(e.target.value)
+                localStorage.setItem('tradeiq_sort', e.target.value)
+              }}
               style={{
-                fontSize: 11,
-                padding: '4px 6px',
-                borderRadius: 4,
+                fontSize: 12,
+                padding: '5px 8px',
                 border: '1px solid #e5e7eb',
+                borderRadius: 6,
                 background: '#fff',
+                color: '#374151',
+                cursor: 'pointer',
               }}
             >
-              <option value="desc">Score: high → low</option>
-              <option value="asc">Score: low → high</option>
+              <optgroup label="Confidence (Layer 3)">
+                <option value="confidence_desc">Confidence: High → Low</option>
+                <option value="confidence_asc">Confidence: Low → High</option>
+              </optgroup>
+              <optgroup label="Score (Layer 2)">
+                <option value="score_desc">L2 Score: High → Low</option>
+                <option value="score_asc">L2 Score: Low → High</option>
+              </optgroup>
+              <optgroup label="Trade quality">
+                <option value="rr_desc">R:R Ratio: Best first</option>
+                <option value="move_desc">Expected Move %: Highest first</option>
+              </optgroup>
+              <optgroup label="Market activity">
+                <option value="volume_desc">Volume: Highest first</option>
+                <option value="velocity_desc">Velocity: Surging first</option>
+                <option value="streak_desc">Streak: Longest first</option>
+              </optgroup>
+              <optgroup label="Technical">
+                <option value="rsi_neutral">RSI: Closest to 50</option>
+              </optgroup>
+              <optgroup label="Other">
+                <option value="alpha">Alphabetical A → Z</option>
+              </optgroup>
             </select>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -237,6 +368,21 @@ export default function ScoresPanel() {
                      border: 'none', borderRadius: 6,
                      cursor: 'pointer' }}>
             Override DO NOT TRADE
+          </button>
+          <button
+            onClick={runLayer3}
+            disabled={l3Running}
+            style={{
+              padding: '8px 10px',
+              fontSize: 11,
+              background: l3Running ? '#9ca3af' : '#111827',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 6,
+              cursor: l3Running ? 'not-allowed' : 'pointer',
+            }}
+          >
+            {l3Running ? 'Running Layer 3...' : 'Run Layer 3'}
           </button>
         </div>
       </div>
@@ -285,13 +431,7 @@ export default function ScoresPanel() {
       )}
 
       {/* Long (BUY) side */}
-      {([...data?.top_scores ?? []]
-        .sort((a, b) =>
-          sortDir === 'desc'
-            ? b.buy_score - a.buy_score
-            : a.buy_score - b.buy_score
-        )
-      ).map((score) => {
+      {sortedScores.map((score) => {
         const sigStyle = SIGNAL_COLORS[score.signal] || SIGNAL_COLORS.watch
         const velColor = VELOCITY_COLORS[score.velocity_label] || '#6b7280'
         const isOpen   = expanded === score.ticker
@@ -314,6 +454,23 @@ export default function ScoresPanel() {
                   {score.is_breakout && (
                     <span style={{ fontSize: 12, color: '#ca8a04' }}>⚡</span>
                   )}
+                  {sortBy === 'confidence_desc' || sortBy === 'confidence_asc' ? (
+                    l3Signals[score.ticker] ? (
+                      <span style={{
+                        fontSize: 10, background: '#eff6ff',
+                        color: '#2563eb', padding: '1px 6px', borderRadius: 8,
+                      }}>
+                        Conf: {l3Signals[score.ticker].toFixed(0)}
+                      </span>
+                    ) : null
+                  ) : sortBy === 'rsi_neutral' ? (
+                    <span style={{
+                      fontSize: 10, background: '#f9fafb',
+                      color: '#6b7280', padding: '1px 6px', borderRadius: 8,
+                    }}>
+                      RSI sort
+                    </span>
+                  ) : null}
                 </div>
                 <div style={{ fontSize: 11, color: '#6b7280' }}>
                   {score.sector}
@@ -397,6 +554,7 @@ export default function ScoresPanel() {
                       </div>
                     ))}
                 </div>
+                <TechnicalCard ticker={score.ticker} direction="BUY" />
                 {score.flags?.length > 0 && (
                   <div style={{ marginTop: 10, display: 'flex',
                                 gap: 6, flexWrap: 'wrap' }}>
@@ -478,11 +636,7 @@ export default function ScoresPanel() {
               : 'No short signals found. Run scoring to check for bearish setups.'}
           </div>
         ) : (
-          ([...shortData].sort((a, b) =>
-            sortDir === 'desc'
-              ? b.short_score - a.short_score
-              : a.short_score - b.short_score
-          )).map((sc) => (
+          sortedShorts.map((sc) => (
             <ShortSignalCard key={sc.ticker} score={sc} />
           ))
         )}

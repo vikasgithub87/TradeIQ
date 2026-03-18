@@ -135,19 +135,42 @@ def _load_intel_files(date_str: str) -> list:
 
 
 def _get_news_impacted(date_str: str) -> list:
+    """
+    News-first approach: fetch breaking news → map to impacted stocks.
+    Falls back to intel file scan if news-first fails.
+    """
+    try:
+        # Try to load today's saved news-first result
+        news_first_file = f"backend/data/news_first_{date_str}.json"
+        if os.path.exists(news_first_file):
+            with open(news_first_file) as f:
+                data = json.load(f)
+            companies = data.get("companies", [])
+            if companies:
+                return companies[:50]
+
+        # Run news-first scan fresh
+        from backend.layers.layer1_news_first import run_news_first_scan
+
+        result = run_news_first_scan(max_companies=50, use_claude=True)
+        companies = result.get("companies", [])
+        if companies:
+            return companies
+    except Exception as e:
+        print(f"  WARNING: News-first scan failed: {e}")
+
+    # Fallback: scan intel files for HIGH relevance
     intel_list = _load_intel_files(date_str)
     companies: List[Dict[str, Any]] = []
     for intel in intel_list:
         if intel.get("intraday_relevance") == "HIGH":
-            companies.append(
-                {
-                    "ticker": intel.get("ticker"),
-                    "name": intel.get("company_name", intel.get("ticker")),
-                    "sector": intel.get("sector_code", "Unknown"),
-                    "reason": (intel.get("catalyst_summary") or "")[:80],
-                }
-            )
-    return companies if companies else list(NIFTY50_TICKERS)[:20]
+            companies.append({
+                "ticker": intel["ticker"],
+                "name": intel.get("company_name", intel["ticker"]),
+                "sector": intel.get("sector_code", "Unknown"),
+                "reason": (intel.get("catalyst_summary", "") or "")[:80],
+            })
+    return companies if companies else NIFTY50_TICKERS[:20]
 
 
 def _get_quarter_results_companies(date_str: str) -> list:

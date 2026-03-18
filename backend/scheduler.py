@@ -58,6 +58,12 @@ app.conf.beat_schedule = {
         "schedule": crontab(hour=8, minute=45,
                             day_of_week="mon,tue,wed,thu,fri"),
     },
+    # Layer 3 — runs at 09:00 IST after Layer 2 scoring
+    "run-layer3-morning": {
+        "task":     "backend.scheduler.task_run_layer3",
+        "schedule": crontab(hour=9, minute=0,
+                            day_of_week="mon,tue,wed,thu,fri"),
+    },
 }
 
 @app.task(name="backend.scheduler.task_run_layer0")
@@ -123,6 +129,22 @@ def task_run_layer2():
         return {
             "status":          "ok",
             "above_threshold": result.get("above_threshold", 0),
+        }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+@app.task(name="backend.scheduler.task_run_layer3")
+def task_run_layer3():
+    """Celery task — runs Layer 3 technical validation at 09:00 IST."""
+    sys.path.insert(0, ".")
+    try:
+        from backend.layers.layer3_runner import run_layer3
+        result = run_layer3(save_to_db=True, verbose=False)
+        return {
+            "status": "ok",
+            "validated": result.get("total_validated", 0),
+            "conviction": len(result.get("high_conviction", [])),
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}

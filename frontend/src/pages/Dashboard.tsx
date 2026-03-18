@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import axios from 'axios'
+import NewsMapped from '../components/NewsMapped'
 import RegimeBanner from '../components/RegimeBanner'
 import NewsFeed from '../components/NewsFeed'
 import ScoresPanel from '../components/ScoresPanel'
@@ -62,6 +63,7 @@ export default function Dashboard() {
         </button>
       </div>
 
+      <NewsMapped />
       <RegimeBanner />
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
