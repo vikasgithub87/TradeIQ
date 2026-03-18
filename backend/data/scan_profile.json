@@ -1,9 +1,9 @@
 {
-  "last_category": "news_impacted",
-  "last_count": 20,
+  "last_category": "electric_vehicle",
+  "last_count": 10,
   "default_category": "nifty50",
   "default_count": 20,
-  "last_run_at": "2026-03-18T11:54:14.919959",
+  "last_run_at": "2026-03-18T13:05:19.433261",
   "scheduled_time": "08:00",
   "email_enabled": false,
   "email_address": "",
@@ -25,6 +25,18 @@
       "count": 20,
       "date": "2026-03-18",
       "ran_at": "2026-03-18T11:54:14.919969"
+    },
+    {
+      "category": "news_impacted",
+      "count": 10,
+      "date": "2026-03-18",
+      "ran_at": "2026-03-18T12:53:54.561657"
+    },
+    {
+      "category": "electric_vehicle",
+      "count": 10,
+      "date": "2026-03-18",
+      "ran_at": "2026-03-18T13:05:19.433278"
     }
   ]
 }

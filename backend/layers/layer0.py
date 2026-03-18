@@ -116,6 +116,9 @@ def classify_regime(
         reason = calendar.get("holiday_name") or "Weekend"
         print(f"  Market closed: {reason}")
         result = _build_closed_regime(date_str, reason, calendar)
+        result["warmup_observed_days"] = None
+        result["warmup_gate_unlocked"] = False
+        result["warmup_days_remaining"] = None
         _save_regime(result)
         _print_morning_briefing(result, calendar, {})
         return result
@@ -215,6 +218,11 @@ def classify_regime(
         "regime_score":            regime_score,
         "do_not_trade":            regime == "DO_NOT_TRADE",
         "india_vix":               vix,
+        "nifty50":                 macro.get("nifty50"),
+        "nifty50_chg_pct":         macro.get("nifty50_chg_pct"),
+        "banknifty":               macro.get("banknifty"),
+        "banknifty_chg_pct":       macro.get("banknifty_chg_pct"),
+        "nifty_direction":         macro.get("nifty_direction", "flat"),
         "crude_oil_usd":           macro.get("crude_oil_usd"),
         "dollar_index":            macro.get("dollar_index"),
         "sp500_futures":           macro.get("sp500_futures"),
@@ -235,6 +243,17 @@ def classify_regime(
     }
 
     # Step 7 — Save and print
+    _save_regime(result)
+    from backend.layers.warm_up import record_observation
+    if result.get("market_open") and not result.get("do_not_trade"):
+        warmup = record_observation(date_str)
+        result["warmup_observed_days"] = warmup.get("observed_days", 0)
+        result["warmup_gate_unlocked"] = warmup.get("gate_unlocked", False)
+        result["warmup_days_remaining"] = warmup.get("days_remaining", 5)
+    else:
+        result["warmup_observed_days"] = None
+        result["warmup_gate_unlocked"] = False
+        result["warmup_days_remaining"] = None
     _save_regime(result)
     _update_history(result)
     _print_morning_briefing(result, calendar, macro)

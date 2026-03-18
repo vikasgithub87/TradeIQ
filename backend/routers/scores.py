@@ -39,7 +39,7 @@ async def get_today_scores(limit: int = 10):
                 if s.get("short_score", 0) >= th
                 and "LOW_LIQUIDITY" not in s.get("short_flags", [])
             ],
-            key=lambda x: x["short_score"],
+            key=lambda x: x.get("short_score", 0),
             reverse=True,
         )[:limit]
 

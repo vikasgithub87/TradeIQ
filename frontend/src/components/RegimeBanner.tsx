@@ -14,6 +14,11 @@ interface RegimeData {
   regime_score:             number
   do_not_trade:             boolean
   india_vix:                number | null
+  nifty50:                  number | null
+  nifty50_chg_pct:          number | null
+  banknifty:                number | null
+  banknifty_chg_pct:        number | null
+  nifty_direction:          string
   crude_oil_usd:            number | null
   sp500_futures:            { change_pct: number; direction: string } | null
   is_expiry_day:            boolean
@@ -93,6 +98,59 @@ export default function RegimeBanner() {
     <div style={{ background: style.bg, border: `1px solid ${style.border}`,
                   borderRadius: 10, padding: "14px 18px",
                   marginBottom: 24, color: style.text }}>
+
+      {/* Index levels row — shown at very top */}
+      {(regime.nifty50 || regime.banknifty) && (
+        <div style={{
+          display: 'flex',
+          gap: 20,
+          marginBottom: 10,
+          paddingBottom: 10,
+          borderBottom: `1px solid ${style.border}`,
+          flexWrap: 'wrap',
+        }}>
+          {regime.nifty50 && (
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+              <span style={{ fontSize: 12, color: style.text, opacity: 0.7 }}>
+                Nifty 50
+              </span>
+              <span style={{ fontSize: 18, fontWeight: 700, color: style.text }}>
+                {regime.nifty50.toLocaleString('en-IN')}
+              </span>
+              {regime.nifty50_chg_pct !== null && (
+                <span style={{
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: regime.nifty50_chg_pct >= 0 ? '#16a34a' : '#dc2626',
+                }}>
+                  {regime.nifty50_chg_pct >= 0 ? '+' : ''}
+                  {regime.nifty50_chg_pct?.toFixed(2)}%
+                </span>
+              )}
+            </div>
+          )}
+          {regime.banknifty && (
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+              <span style={{ fontSize: 12, color: style.text, opacity: 0.7 }}>
+                Bank Nifty
+              </span>
+              <span style={{ fontSize: 18, fontWeight: 700, color: style.text }}>
+                {regime.banknifty.toLocaleString('en-IN')}
+              </span>
+              {regime.banknifty_chg_pct !== null && (
+                <span style={{
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: regime.banknifty_chg_pct >= 0 ? '#16a34a' : '#dc2626',
+                }}>
+                  {regime.banknifty_chg_pct >= 0 ? '+' : ''}
+                  {regime.banknifty_chg_pct?.toFixed(2)}%
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Top row */}
       <div style={{ display: "flex", alignItems: "center",
@@ -180,6 +238,60 @@ export default function RegimeBanner() {
           ⚠ {regime.warning}
         </div>
       )}
+
+      <WarmupStatus />
+    </div>
+  )
+}
+
+function WarmupStatus() {
+  const [status, setStatus] = useState<any>(null)
+
+  useEffect(() => {
+    axios.get(`${API_URL}/regime/warmup`)
+      .then(res => setStatus(res.data))
+      .catch(() => {})
+  }, [])
+
+  if (!status) return null
+  if (status.gate_unlocked) return null
+
+  const pct = status.pct_complete || 0
+
+  return (
+    <div style={{
+      marginTop: 10,
+      paddingTop: 10,
+      borderTop: '1px solid rgba(0,0,0,0.08)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 12,
+      flexWrap: 'wrap',
+    }}>
+      <div style={{ fontSize: 12, color: '#374151', fontWeight: 500 }}>
+        Learn Mode warm-up:
+      </div>
+      <div style={{
+        flex: 1,
+        minWidth: 120,
+        height: 6,
+        background: '#e5e7eb',
+        borderRadius: 3,
+        overflow: 'hidden',
+      }}>
+        <div style={{
+          width: `${pct}%`,
+          height: '100%',
+          background: pct >= 100 ? '#16a34a' : '#2563eb',
+          borderRadius: 3,
+          transition: 'width 0.5s ease',
+        }} />
+      </div>
+      <div style={{ fontSize: 12, color: '#6b7280' }}>
+        {status.observed_days}/{status.required_days} days observed
+        {status.days_remaining > 0 &&
+          ` · ${status.days_remaining} more to unlock`}
+      </div>
     </div>
   )
 }

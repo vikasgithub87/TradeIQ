@@ -30,7 +30,8 @@ SECTOR_PEERS = {
     "INFY": ["TCS", "WIPRO", "HCLTECH"],
     "ICICIBANK": ["HDFCBANK", "AXISBANK", "SBIN"],
     "SBIN": ["ICICIBANK", "HDFCBANK", "BANKBARODA"],
-    "TATAMOTORS": ["MARUTI", "M&M", "BAJAJ-AUTO"],
+    "TMPV": ["MARUTI", "M&M", "HYUNDAI"],
+    "TMCV": ["ASHOKLEY", "EICHERMOT", "M&M"],
     "SUNPHARMA": ["CIPLA", "DRREDDY", "LUPIN"],
     "TATASTEEL": ["JSWSTEEL", "SAIL", "HINDALCO"],
     "WIPRO": ["TCS", "INFY", "HCLTECH"],
@@ -44,6 +45,12 @@ SECTOR_PEERS = {
 
 def get_nse_ticker(ticker: str) -> str:
     """Convert NSE ticker to yfinance format by appending .NS."""
+    # Handle demerged tickers — TATAMOTORS no longer exists
+    DEMERGED_MAP = {
+        "TATAMOTORS": "TMPV",  # Default to PV entity
+    }
+    ticker = DEMERGED_MAP.get(ticker, ticker)
+
     ticker = ticker.upper().strip()
     if not ticker.endswith(".NS") and not ticker.endswith(".BO"):
         return ticker + ".NS"

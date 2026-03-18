@@ -152,7 +152,8 @@ NIFTY50_TICKERS = [
     {"ticker": "DRREDDY", "name": "Dr Reddys Laboratories", "sector": "Pharma"},
     {"ticker": "BAJAJFINSV", "name": "Bajaj Finserv", "sector": "Banking"},
     {"ticker": "ADANIPORTS", "name": "Adani Ports", "sector": "Infra"},
-    {"ticker": "TATAMOTORS", "name": "Tata Motors", "sector": "Auto"},
+    {"ticker": "TMPV", "name": "Tata Motors Passenger Vehicles", "sector": "Auto"},
+    {"ticker": "TMCV", "name": "Tata Motors Commercial Vehicles", "sector": "Auto"},
     {"ticker": "TATASTEEL", "name": "Tata Steel", "sector": "Metals"},
     {"ticker": "JSWSTEEL", "name": "JSW Steel", "sector": "Metals"},
     {"ticker": "HINDALCO", "name": "Hindalco Industries", "sector": "Metals"},
@@ -245,12 +246,12 @@ DOLLAR_APPRECIATION = [
     {"ticker": "BPCL", "name": "Bharat Petroleum", "sector": "Energy", "impact": "negative"},
     {"ticker": "IOC", "name": "Indian Oil Corporation", "sector": "Energy", "impact": "negative"},
     {"ticker": "HINDPETRO", "name": "Hindustan Petroleum", "sector": "Energy", "impact": "negative"},
-    {"ticker": "TATAMOTORS", "name": "Tata Motors", "sector": "Auto", "impact": "negative"},
+    {"ticker": "TMPV", "name": "Tata Motors Passenger Vehicles", "sector": "Auto", "impact": "negative"},
     {"ticker": "HINDALCO", "name": "Hindalco Industries", "sector": "Metals", "impact": "negative"},
 ]
 
 EV_IMPACTED = [
-    {"ticker": "TATAMOTORS", "name": "Tata Motors", "sector": "Auto"},
+    {"ticker": "TMPV", "name": "Tata Motors Passenger Vehicles", "sector": "Auto"},
     {"ticker": "M&M", "name": "Mahindra and Mahindra", "sector": "Auto"},
     {"ticker": "BAJAJ-AUTO", "name": "Bajaj Auto", "sector": "Auto"},
     {"ticker": "HEROMOTOCO", "name": "Hero MotoCorp", "sector": "Auto"},

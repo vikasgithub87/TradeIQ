@@ -13,6 +13,48 @@ from typing import Optional
 _ROOT = Path(__file__).resolve().parent.parent.parent
 CACHE_FILE = str(_ROOT / "backend" / "data" / "macro_cache.json")
 
+def fetch_nifty_levels() -> dict:
+    """
+    Fetch Nifty 50 and Bank Nifty current levels from yfinance.
+    Uses ^NSEI for Nifty 50 and ^NSEBANK for Bank Nifty.
+    Returns levels with change percentage vs previous close.
+    """
+    result = {
+        "nifty50": None,
+        "nifty50_chg_pct": None,
+        "banknifty": None,
+        "banknifty_chg_pct": None,
+        "nifty_direction": "flat",
+    }
+    try:
+        import yfinance as yf
+
+        nifty = yf.Ticker("^NSEI")
+        info = nifty.info
+        price = info.get("regularMarketPrice")
+        prev = info.get("regularMarketPreviousClose")
+        if price and prev and prev > 0:
+            chg = round(((price - prev) / prev) * 100, 2)
+            result["nifty50"] = round(price, 2)
+            result["nifty50_chg_pct"] = chg
+            result["nifty_direction"] = (
+                "up" if chg > 0.1 else "down" if chg < -0.1 else "flat"
+            )
+
+        bnifty = yf.Ticker("^NSEBANK")
+        binfo = bnifty.info
+        bprice = binfo.get("regularMarketPrice")
+        bprev = binfo.get("regularMarketPreviousClose")
+        if bprice and bprev and bprev > 0:
+            bchg = round(((bprice - bprev) / bprev) * 100, 2)
+            result["banknifty"] = round(bprice, 2)
+            result["banknifty_chg_pct"] = bchg
+
+    except Exception as e:
+        print(f"  WARNING: Could not fetch Nifty levels: {e}")
+
+    return result
+
 def fetch_crude_oil() -> Optional[float]:
     """
     Fetch Brent crude oil price using Yahoo Finance API.
@@ -139,6 +181,9 @@ def get_macro_snapshot(mock_vix: Optional[float] = None) -> dict:
     Fetch all macro data and return a combined snapshot.
     Safe — all individual fetches have try/except fallbacks.
     """
+    print("  Fetching Nifty and Bank Nifty levels...")
+    nifty_levels = fetch_nifty_levels()
+
     print("  Fetching India VIX...")
     vix     = fetch_india_vix(mock_vix)
 
@@ -171,6 +216,11 @@ def get_macro_snapshot(mock_vix: Optional[float] = None) -> dict:
 
     return {
         "india_vix":        vix,
+        "nifty50":          nifty_levels.get("nifty50"),
+        "nifty50_chg_pct":  nifty_levels.get("nifty50_chg_pct"),
+        "banknifty":        nifty_levels.get("banknifty"),
+        "banknifty_chg_pct": nifty_levels.get("banknifty_chg_pct"),
+        "nifty_direction":  nifty_levels.get("nifty_direction", "flat"),
         "crude_oil_usd":    crude,
         "dollar_index":     dxy,
         "sp500_futures":    sp500,

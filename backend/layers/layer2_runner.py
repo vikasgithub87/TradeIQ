@@ -157,7 +157,7 @@ def run_layer2(
         }
 
     if verbose:
-        print(f"  Regime: {regime.get('regime')}  Threshold: ≥{threshold}")
+        print(f"  Regime: {regime.get('regime')}  Threshold: >={threshold}")
 
     if ticker:
         fn = f"company_intel_{ticker.upper()}_{date_str}.json"
@@ -213,6 +213,12 @@ def run_layer2(
         score["streak_days"] = velocity["streak_days"]
         score["sector"] = sector
         velocity_history = update_velocity_history(tkr, score["buy_score"], velocity_history)
+
+        score["regime"] = regime.get("regime", "RANGE_BOUND")
+        score["regime_threshold"] = threshold
+        score["regime_vix"] = regime.get("india_vix", 15.0)
+        score["position_size_mult"] = regime.get("position_size_multiplier", 1.0)
+
         arb_regime = regime.get("regime", "RANGE_BOUND")
         if ignore_regime:
             arb_regime = "RANGE_BOUND"
@@ -239,6 +245,9 @@ def run_layer2(
         "tenant_id": TENANT_ID,
         "regime": regime.get("regime"),
         "regime_score": regime.get("regime_score", 50),
+        "regime_threshold": threshold,
+        "regime_position_size_mult": regime.get("position_size_multiplier", 1.0),
+        "regime_allowed_directions": regime.get("allowed_directions", ["BUY", "SHORT"]),
         "threshold": threshold,
         "total_companies": len(intel_list),
         "above_threshold": len(filtered_scores),
@@ -252,16 +261,17 @@ def run_layer2(
         "generated_at": datetime.datetime.now().isoformat(),
     }
 
+    short_threshold = max(40, threshold - 20)
     scores_output["short_scores"] = sorted(
         [
             s
             for s in company_scores
-            if s.get("short_score", 0) >= threshold
+            if s.get("short_score", 0) >= short_threshold
             and "LOW_LIQUIDITY" not in s.get("short_flags", [])
         ],
-        key=lambda x: x["short_score"],
+        key=lambda x: x.get("short_score", 0),
         reverse=True,
-    )[:10]
+    )[:15]
 
     os.makedirs(SCORES_DIR, exist_ok=True)
     out_file = os.path.join(SCORES_DIR, f"trading_scores_{date_str}.json")

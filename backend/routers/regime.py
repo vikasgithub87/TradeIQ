@@ -107,3 +107,25 @@ async def get_regime_stats():
         "avg_vix":        round(vix_total / vix_count, 1) if vix_count else None,
         "trading_days":   total - dnt_days,
     }
+
+
+@router.get("/warmup")
+async def get_warmup_status():
+    """
+    Return warm-up gate status for Learn Mode.
+    Used by dashboard Settings panel and Learn Mode gate.
+    """
+    try:
+        import sys
+        sys.path.insert(0, ".")
+        from backend.layers.warm_up import get_warmup_status as _get_warmup_status
+        return _get_warmup_status()
+    except Exception as e:
+        return {
+            "observed_days": 0,
+            "gate_unlocked": False,
+            "days_remaining": 5,
+            "required_days": 5,
+            "pct_complete": 0,
+            "error": str(e),
+        }

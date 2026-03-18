@@ -16,6 +16,115 @@ load_dotenv()
 NEWSAPI_KEY = os.getenv("NEWSAPI_KEY", "")
 NEWSAPI_BASE = "https://newsapi.org/v2/everything"
 
+# Short search-friendly names for NewsAPI queries
+# Full registered names often return zero results
+# These shorter terms match how media actually refers to companies
+NEWSAPI_SEARCH_NAMES = {
+    "RELIANCE": "Reliance Industries",
+    "TCS": "Tata Consultancy TCS",
+    "HDFCBANK": "HDFC Bank",
+    "INFY": "Infosys",
+    "ICICIBANK": "ICICI Bank",
+    "HINDUNILVR": "Hindustan Unilever HUL",
+    "ITC": "ITC Limited cigarettes",
+    "SBIN": "State Bank India SBI",
+    "BAJFINANCE": "Bajaj Finance",
+    "BHARTIARTL": "Airtel Bharti",
+    "KOTAKBANK": "Kotak Bank",
+    "LT": "Larsen Toubro L&T",
+    "AXISBANK": "Axis Bank",
+    "ASIANPAINT": "Asian Paints",
+    "MARUTI": "Maruti Suzuki",
+    "TITAN": "Titan Tata",
+    "WIPRO": "Wipro IT",
+    "NESTLEIND": "Nestle India",
+    "ULTRACEMCO": "UltraTech Cement",
+    "POWERGRID": "Power Grid India",
+    "NTPC": "NTPC power",
+    "ONGC": "ONGC oil",
+    "TECHM": "Tech Mahindra",
+    "HCLTECH": "HCL Technologies",
+    "SUNPHARMA": "Sun Pharma",
+    "CIPLA": "Cipla pharma",
+    "DRREDDY": "Dr Reddy",
+    "BAJAJFINSV": "Bajaj Finserv",
+    "ADANIPORTS": "Adani Ports",
+    "TMPV": "Tata Motors Passenger Vehicles JLR EV",
+    "TMCV": "Tata Motors Commercial Vehicles trucks buses",
+    "TATASTEEL": "Tata Steel",
+    "JSWSTEEL": "JSW Steel",
+    "HINDALCO": "Hindalco",
+    "COALINDIA": "Coal India",
+    "GRASIM": "Grasim",
+    "BRITANNIA": "Britannia biscuits",
+    "HEROMOTOCO": "Hero MotoCorp",
+    "EICHERMOT": "Eicher Motors Royal Enfield",
+    "BPCL": "BPCL Bharat Petroleum",
+    "INDUSINDBK": "IndusInd Bank",
+    "APOLLOHOSP": "Apollo Hospitals",
+    "TATACONSUM": "Tata Consumer",
+    "SBILIFE": "SBI Life Insurance",
+    "HDFCLIFE": "HDFC Life",
+    "BAJAJ-AUTO": "Bajaj Auto",
+    "DIVISLAB": "Divi Laboratories",
+    "ADANIENT": "Adani Enterprises",
+    "TATAPOWER": "Tata Power",
+    "M&M": "Mahindra",
+    "LTIM": "LTIMindtree",
+    "ZOMATO": "Zomato food delivery",
+    "DMART": "DMart Avenue Supermarts",
+    "IRCTC": "IRCTC railway",
+    "HAL": "HAL defence India",
+    "BEL": "Bharat Electronics BEL",
+    "TVSMOTOR": "TVS Motor",
+    "MOTHERSON": "Samvardhana Motherson",
+    "BALKRISIND": "Balkrishna Industries BKT tyres",
+    "APOLLOTYRE": "Apollo Tyres",
+    "ASHOKLEY": "Ashok Leyland",
+    "EXIDEIND": "Exide battery",
+    "BOSCHLTD": "Bosch India",
+    "CEAT": "CEAT tyres",
+    "PERSISTENT": "Persistent Systems",
+    "COFORGE": "Coforge IT",
+    "KPITTECH": "KPIT Technologies",
+    "TATAELXSI": "Tata Elxsi",
+    "MPHASIS": "Mphasis",
+    "DLF": "DLF real estate",
+    "GODREJPROP": "Godrej Properties",
+    "OBEROIRLTY": "Oberoi Realty",
+    "SAIL": "SAIL Steel Authority",
+    "NMDC": "NMDC iron ore",
+    "HINDZINC": "Hindustan Zinc",
+    "VEDL": "Vedanta",
+    "RECLTD": "REC Limited power finance",
+    "PFC": "Power Finance Corporation",
+    "IRFC": "IRFC railway finance",
+    "ADANIGREEN": "Adani Green Energy",
+    "ADANITRANS": "Adani Transmission",
+    "IOC": "Indian Oil Corporation",
+    "HINDPETRO": "Hindustan Petroleum HPCL",
+    "GAIL": "GAIL gas India",
+    "NAUKRI": "Info Edge Naukri",
+    "INDIAMART": "IndiaMART",
+    "POLICYBZR": "PolicyBazaar PB Fintech",
+    "PAYTM": "Paytm One97",
+    "NYKAA": "Nykaa beauty",
+    "TRENT": "Trent Zudio Westside",
+    "JUBLFOOD": "Jubilant FoodWorks Dominos",
+    "BANKBARODA": "Bank of Baroda",
+    "CANBK": "Canara Bank",
+    "PNB": "Punjab National Bank",
+    "YESBANK": "Yes Bank",
+    "RBLBANK": "RBL Bank",
+    "IDFCFIRSTB": "IDFC First Bank",
+    "FEDERALBNK": "Federal Bank",
+    "BANDHANBNK": "Bandhan Bank",
+    "MUTHOOTFIN": "Muthoot Finance gold",
+    "CHOLAFIN": "Cholamandalam Finance",
+    "MANAPPURAM": "Manappuram Finance",
+    "LICHSGFIN": "LIC Housing Finance",
+}
+
 
 COMPANY_NAME_MAP = {
     "reliance industries": "RELIANCE",
@@ -57,7 +166,13 @@ COMPANY_NAME_MAP = {
     "sun pharmaceutical": "SUNPHARMA",
     "cipla": "CIPLA",
     "dr reddy": "DRREDDY",
-    "tata motors": "TATAMOTORS",
+    "tata motors passenger": "TMPV",
+    "tata motors pv": "TMPV",
+    "tmpv": "TMPV",
+    "tata motors commercial": "TMCV",
+    "tata motors cv": "TMCV",
+    "tmcv": "TMCV",
+    "tata motors": "TMPV",
     "tata steel": "TATASTEEL",
     "jsw steel": "JSWSTEEL",
     "hindalco": "HINDALCO",
@@ -128,6 +243,74 @@ def _placeholder_articles(ticker: str) -> List[Dict]:
     }]
 
 
+def fetch_google_news_rss(
+    ticker: str,
+    company_name: str,
+    max_articles: int = 5,
+) -> list:
+    """
+    Fetch news from Google News RSS feed.
+    Free, unlimited, good coverage of Indian companies.
+    Used as fallback when NewsAPI returns zero results.
+    """
+    import urllib.request
+    import urllib.parse
+    import xml.etree.ElementTree as ET
+
+    # Use short search name if available
+    search_name = NEWSAPI_SEARCH_NAMES.get(ticker, company_name)
+    # Add India context for better results
+    query = f"{search_name} stock India"
+    encoded = urllib.parse.quote(query)
+    url = f"https://news.google.com/rss/search?q={encoded}&hl=en-IN&gl=IN&ceid=IN:en"
+
+    articles = []
+    try:
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"},
+        )
+        resp = urllib.request.urlopen(req, timeout=10)
+        xml = resp.read()
+        root = ET.fromstring(xml)
+
+        for item in root.findall(".//item")[:max_articles]:
+            title = item.findtext("title", "")
+            pub_date = item.findtext("pubDate", "")
+            link = item.findtext("link", "")
+            source_el = item.find("source")
+            source = source_el.text if source_el is not None else "Google News"
+
+            if not title or title == "[Removed]":
+                continue
+
+            # Parse pubDate to ISO format
+            published_at = ""
+            try:
+                import email.utils
+
+                parsed = email.utils.parsedate_to_datetime(pub_date)
+                published_at = parsed.isoformat()
+            except Exception:
+                published_at = pub_date
+
+            articles.append({
+                "headline": title,
+                "body": "",
+                "source": source,
+                "source_trust": get_source_trust(source),
+                "published_at": published_at,
+                "recency_weight": _compute_recency_weight(published_at),
+                "url": link,
+                "fingerprint": _headline_fingerprint(title),
+            })
+
+    except Exception:
+        pass  # Silent fail — return empty list
+
+    return articles
+
+
 def fetch_news(
     ticker: str,
     company_name: str,
@@ -142,7 +325,9 @@ def fetch_news(
         datetime.date.today() - datetime.timedelta(days=days_back)
     ).strftime("%Y-%m-%d")
 
-    query = f'"{company_name}" India NSE'
+    # Use optimised short search name if available
+    search_term = NEWSAPI_SEARCH_NAMES.get(ticker, company_name)
+    query = f"{search_term} NSE India stock"
 
     try:
         resp = requests.get(
@@ -161,11 +346,18 @@ def fetch_news(
         data = resp.json()
         if data.get("status") != "ok":
             print(f"  WARNING: NewsAPI error for {ticker}: {data.get('message')}")
+            rss_articles = fetch_google_news_rss(ticker, company_name, max_articles)
+            if rss_articles:
+                return rss_articles[:max_articles]
             return _placeholder_articles(ticker)
 
         raw_articles = data.get("articles", [])
         if not raw_articles:
-            print(f"  WARNING: No articles found for {ticker}")
+            # Fallback to Google News RSS
+            rss_articles = fetch_google_news_rss(ticker, company_name, max_articles)
+            if rss_articles:
+                return rss_articles[:max_articles]
+            # Final fallback — placeholder
             return _placeholder_articles(ticker)
 
         seen_fps = set()
@@ -204,9 +396,15 @@ def fetch_news(
 
     except requests.exceptions.Timeout:
         print(f"  WARNING: NewsAPI timeout for {ticker}")
+        rss_articles = fetch_google_news_rss(ticker, company_name, max_articles)
+        if rss_articles:
+            return rss_articles[:max_articles]
         return _placeholder_articles(ticker)
     except Exception as e:
         print(f"  WARNING: NewsAPI error for {ticker}: {e}")
+        rss_articles = fetch_google_news_rss(ticker, company_name, max_articles)
+        if rss_articles:
+            return rss_articles[:max_articles]
         return _placeholder_articles(ticker)
 
 

@@ -432,37 +432,61 @@ export default function ScoresPanel() {
         </div>
       )}
 
-      {shortData.length > 0 && (
-        <div style={{ marginTop: 32 }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: 12,
-          }}>
-            <div>
-              <h2 style={{
-                fontSize: 18,
-                fontWeight: 600,
-                margin: 0,
-                color: '#991b1b',
-              }}>
-                Today's SHORT Signals
-              </h2>
-              <p style={{ fontSize: 12, color: '#6b7280', margin: '4px 0 0' }}>
-                {shortData.length} companies with bearish signals
-              </p>
-            </div>
+      {/* Short signals section — always visible */}
+      <div style={{ marginTop: 32 }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 12,
+        }}>
+          <div>
+            <h2 style={{
+              fontSize: 18,
+              fontWeight: 600,
+              margin: 0,
+              color: '#991b1b',
+            }}>
+              Today's SHORT Signals
+            </h2>
+            <p style={{
+              fontSize: 12,
+              color: '#6b7280',
+              margin: '4px 0 0',
+            }}>
+              {shortData.length > 0
+                ? `${shortData.length} companies with bearish signals`
+                : data?.regime === 'TRENDING_BULL'
+                ? 'Shorts suppressed in TRENDING BULL regime (need score ≥ 82)'
+                : 'No short signals above threshold today'}
+            </p>
           </div>
-          {([...shortData].sort((a, b) =>
+        </div>
+
+        {shortData.length === 0 ? (
+          <div style={{
+            padding: '20px 16px',
+            background: '#fef2f2',
+            borderRadius: 10,
+            border: '1px solid #fecaca',
+            fontSize: 13,
+            color: '#991b1b',
+            textAlign: 'center',
+          }}>
+            {data?.regime === 'TRENDING_BULL'
+              ? '⚠ TRENDING BULL regime — short signals require score ≥ 82. No strong short candidates today.'
+              : 'No short signals found. Run scoring to check for bearish setups.'}
+          </div>
+        ) : (
+          ([...shortData].sort((a, b) =>
             sortDir === 'desc'
               ? b.short_score - a.short_score
               : a.short_score - b.short_score
           )).map((sc) => (
             <ShortSignalCard key={sc.ticker} score={sc} />
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
     </div>
   )
 }
